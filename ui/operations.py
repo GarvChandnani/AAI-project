@@ -10,6 +10,7 @@ import agents as A
 from agents.shared_agent import fmt_ts, humanize_minutes
 
 from .common import SLA_ICON, where, workspace
+from .style import render_top_bar
 
 
 def _tickets(store):
@@ -161,7 +162,7 @@ def _runs(store):
 
 def page():
     store = workspace()
-    st.title("Tickets & approvals")
+    render_top_bar(store, "Tickets & Approvals")
     n = len(A.approvals.pending(store))
     t1, t2, t3 = st.tabs([":material/confirmation_number: Tickets", f":material/approval: Approvals ({n})" if n else
                           ":material/approval: Approvals", ":material/history: Workflow runs"])

@@ -403,5 +403,7 @@ def page():
     from agents.tenancy import get_registry
 
     from .common import CATEGORY_COLORS, CATEGORY_ORDER, workspace
-    st.title("Customer intelligence")
-    render(workspace(), get_registry(), CATEGORY_ORDER, CATEGORY_COLORS)
+    from .style import render_top_bar
+    store = workspace()
+    render_top_bar(store, "Customer Intelligence & AI Insights")
+    render(store, get_registry(), CATEGORY_ORDER, CATEGORY_COLORS)

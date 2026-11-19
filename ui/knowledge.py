@@ -9,6 +9,7 @@ from agents import knowledge_agent as K
 from agents.shared_agent import fmt_ts
 
 from .common import where, workspace
+from .style import render_top_bar
 
 SECTION_NAMES = {"orders-and-delivery": "Orders & delivery", "returns-and-refunds": "Returns & refunds", "payments": "Payments",
                  "account-and-security": "Account & security", "nova-membership": "Nova Plus & Premium",
@@ -18,7 +19,7 @@ SECTION_NAMES = {"orders-and-delivery": "Orders & delivery", "returns-and-refund
 
 def page():
     store = workspace()
-    st.title("Knowledge base")
+    render_top_bar(store, "Knowledge Base & Documentation")
     kb = A.load_kb(store)
     imp = store.get("meta", "kb_import") or {}
     st.caption(f"{len(kb)} articles. The assistant answers only from these, and cites the ones it used on the Support desk.")

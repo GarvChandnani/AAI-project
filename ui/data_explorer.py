@@ -12,6 +12,7 @@ from analytics.warehouse import Warehouse, analytics_path
 from integrations import BUSINESS_ENTITIES
 
 from .common import rel, workspace
+from .style import render_top_bar
 
 STORES = {
     "support": ("🗄️ SupportPilot database", "Conversations, tickets, workflow runs, actions, approvals, audit, knowledge base…"),
@@ -61,7 +62,7 @@ def _show(df, key, records=None):
 def page():
     store = workspace()
     reg = get_registry()
-    st.title("Data explorer")
+    render_top_bar(store, "System Data Explorer")
     kind = st.segmented_control("Store", list(STORES), format_func=lambda k: STORES[k][0], default="support", key="dx_store") or "support"
     st.caption(STORES[kind][1])
 

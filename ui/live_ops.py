@@ -9,11 +9,12 @@ import agents as A
 from agents.shared_agent import humanize_minutes
 
 from .common import CATEGORY_COLORS, CATEGORY_ORDER, SERIES_1, SLA_ICON, where, workspace
+from .style import render_top_bar
 
 
 def page():
     store = workspace()
-    st.title("Live operations")
+    render_top_bar(store, "Live Operations & Telemetry")
     where("support", "tickets, csat, notifications", store)
     m = A.supervisor_metrics(store)
     cs = A.csat_summary(store)

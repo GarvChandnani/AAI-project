@@ -39,19 +39,8 @@ def rel(path):
 
 def where(kind, detail="", store=None):
     """One-line provenance label shown next to data: which store, which file, which collection/table."""
-    store = store or workspace()
-    if kind == "support":
-        st.caption(f"🗄️ **SupportPilot database** · `{rel(store.path)}`" + (f" → collection `{detail}`" if detail else ""))
-    elif kind == "company":
-        sim = " (simulated, synthetic data)" if store.adapter.simulated else ""
-        st.caption(f"🏢 **Company system: {store.adapter.name}{sim}** · read through the adapter, read-only"
-                   + (f" → `{detail}`" if detail else ""))
-    elif kind == "warehouse":
-        st.caption(f"📊 **Analytics warehouse** · `{rel(detail)}` (rebuilt by each analytics run)")
-    elif kind == "files":
-        st.caption(f"📄 **Help-centre files** · `{detail or 'docs/help-center/'}`")
-    elif kind == "platform":
-        st.caption(f"🔐 **Platform registry** · `{rel(get_registry().store.path)}`" + (f" → `{detail}`" if detail else ""))
+    from .style import render_provenance_badge
+    render_provenance_badge(kind, detail, store)
 
 
 def step_lines(steps):

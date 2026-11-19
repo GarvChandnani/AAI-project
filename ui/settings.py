@@ -12,12 +12,13 @@ from agents.shared_agent import fmt_ts
 from agents.tenancy import get_registry
 
 from .common import rel, workspace
+from .style import render_top_bar
 
 
 def page():
     store = workspace()
     reg = get_registry()
-    st.title("Settings")
+    render_top_bar(store, "System Configuration & Governance")
     desc = store.describe()
     t1, t2, t3, t4 = st.tabs([":material/cable: Integration", ":material/policy: Action policy", ":material/key: API keys",
                               ":material/receipt_long: Audit log"])
