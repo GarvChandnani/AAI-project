@@ -29,6 +29,7 @@ AGENTS = {
     "2": ("understand", "Customer context", "👤"),
     "3": ("investigate", "Knowledge base", "📚"),
     "4": ("investigate", "Troubleshooting", "🔧"),
+    "Idempotency Guard": ("investigate", "Idempotency Guard", "🛡️"),
     "7": ("decide", "Escalation", "⚖️"),
     "5": ("decide", "Actions", "⚡"),
     "8": ("deliver", "Ticket", "🎫"),
@@ -101,6 +102,8 @@ def _explain(step, r, seen):
         failed = sum(s["status"] == "fail" for s in steps)
         tally = f" ({passed} passed, {failed} found a problem)" if passed or failed else ""
         return f"Ran {len(steps)} check{'s' if len(steps) != 1 else ''} on live data{tally}. Diagnosis: {inv['diagnosis']}"
+    if k == "Idempotency Guard":
+        return "Checked if this order ID or query was already processed to prevent duplicate tickets and actions."
     if k == "7":
         seen["7"] = seen.get("7", 0) + 1
         if seen["7"] == 1:

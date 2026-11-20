@@ -18,9 +18,9 @@ import time
 
 from integrations.base import AdapterError
 
-from . import (action_agent, approvals, channel_agent, context_agent, email_agent, escalation_agent, intent_agent,
-               knowledge_agent, llm, media, memory_agent, response_agent, runlog, satisfaction_agent, ticket_agent,
-               tracking_agent, troubleshooting_agent)
+from . import (action_agent, approvals, channel_agent, context_agent, email_agent, escalation_agent,
+               idempotency_agent, intent_agent, knowledge_agent, llm, media, memory_agent, response_agent,
+               runlog, satisfaction_agent, ticket_agent, tracking_agent, troubleshooting_agent)
 from .policy import SENSITIVE_ACTIONS
 from .shared_agent import ALWAYS_ESCALATE, AUTO_REFUND_LIMIT, CHANNELS, COMPANY, INTENTS, iso
 from .workspace import as_workspace
@@ -329,6 +329,41 @@ def _handle(ws, run, text, conversation_id, customer_id, channel, payload, use_l
         if not investigation.get("missing_slots"):
             investigation["confidence"] = round(min(0.99, investigation.get("confidence", 0) + 0.05), 2)
     out["investigation"] = investigation
+
+    # ---- Idempotency check ----------------------------------------------------
+    dup = None
+    if not investigation.get("missing_slots") and issue["intent"] not in ("ticket_status", "human_agent"):
+        dup = T.run("Idempotency Guard",
+                    lambda: idempotency_agent.check_duplicate(store, ctx, issue, text, investigation),
+                    lambda r: f"duplicate: {r['is_duplicate']} (ticket {r.get('ticket_id')})" if r and r.get("is_duplicate") else "order not processed yet")
+
+    if dup and dup.get("is_duplicate"):
+        existing_ticket = dup["ticket"]
+        order_ref = dup.get("order_id") or "this order"
+        t_status = dup.get("status", "Opened")
+        tid = dup.get("ticket_id")
+
+        if t_status in ("Resolved", "Closed"):
+            res_note = f" {dup['resolution_note']}" if dup.get("resolution_note") else ""
+            reply = (f"This issue for order {order_ref} has already been processed and resolved under ticket {tid}.{res_note} "
+                     f"There is no need to submit a duplicate request.\n\n"
+                     f"If you need help with a different order or require further assistance, please let us know!")
+            decision = dict(decision="auto_resolve", confidence=1.0, threshold=0.7, team="Tier-1 Support",
+                            reasons=[f"Order {order_ref} already processed and resolved under {tid}"])
+            memory_agent.set_status(issue, "resolved", f"Already resolved under {tid}")
+        else:
+            team_name = dup.get("team") or "Support"
+            reply = (f"A ticket ({tid}) for order {order_ref} has already been generated and is currently {t_status} "
+                     f"with our {team_name} team.\n\n"
+                     f"Our specialists are actively working on it, so you do not need to submit a duplicate query. "
+                     f"Your reference number is {tid}.")
+            decision = dict(decision="escalate", confidence=1.0, threshold=0.7, team=team_name,
+                            reasons=[f"Duplicate query: active ticket {tid} already in progress for order {order_ref}"])
+            memory_agent.set_status(issue, "escalated", f"Active ticket {tid} already in progress")
+
+        out.update(actions=[], decision=decision, ticket=existing_ticket)
+        return finish(reply, ctx, decision=decision["decision"], ticket=existing_ticket, intent=issue["intent"], actions=[],
+                      generated=True)
 
     # ---- 7 escalation (pre) → confirm? → 5 authorize + act → 7 escalation (post) -------------
     thresholds = satisfaction_agent.learned_thresholds(store)

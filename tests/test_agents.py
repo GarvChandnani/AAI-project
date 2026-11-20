@@ -49,6 +49,25 @@ def test_wrong_item_is_resolved_without_a_human(store):
     assert store.get("orders", "ORD12345")["replacement_order"]
 
 
+def test_idempotent_duplicate_query_prevents_duplicate_ticket_and_actions(store):
+    # 1. First turn: initial query processes order ORD12345, generates ticket, executes replacement
+    t1 = talk(store, ["My order was delivered but I received the wrong item"], "CUST1001")[0]
+    t1_ticket = t1["ticket"]["id"]
+    assert t1["ticket"]["status"] == "Resolved"
+    assert len(t1["actions"]) > 0
+
+    # 2. Second turn: exact same query repeated by the customer
+    t2 = talk(store, ["My order was delivered but I received the wrong item"], "CUST1001")[0]
+    # Check that it detected the existing resolved order/ticket
+    assert t2["ticket"]["id"] == t1_ticket
+    assert "already been processed and resolved" in t2["reply"]
+    # No duplicate actions executed!
+    assert len(t2["actions"]) == 0
+    # No duplicate tickets created!
+    all_tickets = store.list("tickets", customer_id="CUST1001")
+    assert len([t for t in all_tickets if t["intent"] == "wrong_item"]) == 1
+
+
 def test_multi_turn_payment_failure_fills_order_id_slot(store):
     t1, t2 = talk(store, ["My payment failed but money was deducted", "ORD12346"], "CUST1002")
     assert t1["decision"]["decision"] == "clarify" and "Order ID" in t1["reply"]
