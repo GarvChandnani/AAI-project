@@ -12,6 +12,8 @@ MODERN_CSS = """
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
 
 <style>
 /* ==========================================================================
@@ -37,13 +39,46 @@ MODERN_CSS = """
     --sp-btn-radius: 10px;
 }
 
-html, body, [class*="css"], [class*="st-"] {
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+html, body, .stApp {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     letter-spacing: -0.011em;
+}
+
+h1, h2, h3, h4, h5, h6, p, label, input, textarea, select {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 code, pre, [data-testid="stCodeBlock"] * {
     font-family: 'JetBrains Mono', ui-monospace, monospace !important;
+}
+
+/* ==========================================================================
+   MATERIAL SYMBOLS & ICONS PRESERVATION (CRITICAL FIX FOR TEXT OVERLAPS)
+   ========================================================================== */
+[data-testid="stIconMaterial"],
+[data-testid="stIcon"],
+.material-symbols-rounded,
+.material-symbols-outlined,
+.material-icons,
+[class*="material-symbols"],
+[class*="material-icons"] {
+    font-family: 'Material Symbols Rounded', 'Material Symbols Outlined', 'Material Icons' !important;
+    font-weight: normal !important;
+    font-style: normal !important;
+    font-size: 1.25rem !important;
+    line-height: 1 !important;
+    letter-spacing: normal !important;
+    text-transform: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    white-space: nowrap !important;
+    word-wrap: normal !important;
+    direction: ltr !important;
+    -webkit-font-smoothing: antialiased !important;
+    text-rendering: optimizeLegibility !important;
+    font-feature-settings: 'liga' 1 !important;
+    flex-shrink: 0 !important;
 }
 
 /* ==========================================================================
@@ -87,11 +122,27 @@ code, pre, [data-testid="stCodeBlock"] * {
 }
 
 [data-testid="stSidebarNav"] a {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.65rem !important;
     border-radius: 10px !important;
     padding: 0.6rem 0.85rem !important;
     font-weight: 500 !important;
     font-size: 0.9rem !important;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+[data-testid="stSidebarNav"] a span[data-testid="stIconMaterial"] {
+    margin: 0 !important;
+    font-size: 1.25rem !important;
+    flex-shrink: 0 !important;
+}
+
+[data-testid="stSidebarNav"] a span:last-child {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
 }
 
 [data-testid="stSidebarNav"] a:hover {
@@ -182,12 +233,22 @@ code, pre, [data-testid="stCodeBlock"] * {
    BUTTONS & INPUTS
    ========================================================================== */
 .stButton > button {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.5rem !important;
     border-radius: var(--sp-btn-radius) !important;
     font-weight: 600 !important;
     font-size: 0.88rem !important;
     padding: 0.5rem 1.1rem !important;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
     border: 1px solid rgba(148, 163, 184, 0.25) !important;
+}
+
+.stButton > button [data-testid="stIconMaterial"] {
+    margin: 0 !important;
+    font-size: 1.15rem !important;
+    flex-shrink: 0 !important;
 }
 
 .stButton > button:hover {
@@ -217,11 +278,20 @@ code, pre, [data-testid="stCodeBlock"] * {
 }
 
 .stTabs [data-baseweb="tab"] {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
     border-radius: 8px 8px 0 0 !important;
     font-weight: 600 !important;
     font-size: 0.92rem !important;
     padding: 0.6rem 1.2rem !important;
     transition: all 0.2s ease !important;
+}
+
+.stTabs [data-baseweb="tab"] [data-testid="stIconMaterial"] {
+    margin: 0 !important;
+    font-size: 1.15rem !important;
+    flex-shrink: 0 !important;
 }
 
 [data-testid="stExpander"] {
