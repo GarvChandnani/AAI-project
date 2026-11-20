@@ -122,13 +122,14 @@ def _chat(store, use_llm):
     )
     c4.button("New Chat", icon=":material/add_comment:", on_click=_new, width="stretch")
 
-    # Quick interactive scenario pills
+    # Quick interactive scenario pills in a clean 3-column grid
     st.markdown(
         "<div style='font-size: 0.74rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.65; margin: 8px 0 4px 0;'>⚡ Quick Scenarios (1-Click Demo)</div>",
         unsafe_allow_html=True,
     )
-    chip_cols = st.columns(len(QUICK_CHIPS))
-    for col, (label, prompt) in zip(chip_cols, QUICK_CHIPS):
+    q1, q2, q3 = st.columns(3)
+    cols = [q1, q2, q3, q1, q2, q3]
+    for col, (label, prompt) in zip(cols, QUICK_CHIPS):
         if col.button(label, key=f"chip_{label}", use_container_width=True):
             ss.pending = prompt
             st.rerun()

@@ -138,13 +138,6 @@ code, pre, [data-testid="stCodeBlock"] * {
     flex-shrink: 0 !important;
 }
 
-[data-testid="stSidebarNav"] a span:last-child {
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    white-space: nowrap !important;
-}
-
 [data-testid="stSidebarNav"] a:hover {
     transform: translateX(3px) !important;
 }
@@ -329,12 +322,15 @@ code, pre, [data-testid="stCodeBlock"] * {
     border: 1px solid rgba(99, 102, 241, 0.18);
     border-radius: 16px;
     backdrop-filter: blur(10px);
+    flex-wrap: wrap;
+    gap: 14px;
 }
 
 .sp-brand-badge {
     display: flex;
     align-items: center;
     gap: 12px;
+    flex-wrap: wrap;
 }
 
 .sp-logo-glow {
@@ -348,6 +344,7 @@ code, pre, [data-testid="stCodeBlock"] * {
     color: white;
     font-size: 20px;
     box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);
+    flex-shrink: 0;
 }
 
 .sp-status-pulse {
@@ -418,28 +415,28 @@ def render_top_bar(store, current_page: str = ""):
         <div class="sp-brand-badge">
             <div class="sp-logo-glow">⚡</div>
             <div>
-                <div style="display: flex; align-items: center; gap: 8px;">
+                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
                     <span style="font-size: 1.18rem; font-weight: 800; letter-spacing: -0.02em;">SupportPilot</span>
                     <span class="sp-pill-tag" style="background: rgba(79, 70, 229, 0.15); color: #6366f1; border: 1px solid rgba(99, 102, 241, 0.3);">
                         AI AGENT DESK
                     </span>
-                    {f'<span style="font-size: 0.85rem; opacity: 0.5;">/ {current_page}</span>' if current_page else ''}
+                    {f'<span class="sp-pill-tag" style="background: rgba(148, 163, 184, 0.12); color: inherit; border: 1px solid rgba(148, 163, 184, 0.2);">{current_page}</span>' if current_page else ''}
                 </div>
-                <div style="font-size: 0.8rem; opacity: 0.65; margin-top: 1px;">
+                <div style="font-size: 0.78rem; opacity: 0.65; margin-top: 3px;">
                     Enterprise Multi-Agent Customer Experience & Autonomous Resolution System
                 </div>
             </div>
         </div>
-        <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
             <div class="sp-pill-tag" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.25); color: #10b981;">
                 <span class="sp-status-pulse"></span>
                 <span>SYSTEM ONLINE</span>
             </div>
             <div class="sp-pill-tag" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.25); color: #818cf8;">
-                <span>{'🧠 ' + model_name if is_llm else '⚙️ Deterministic Rules'}</span>
+                <span>{'🧠 ' + model_name if is_llm else '⚙️ Rules Engine'}</span>
             </div>
             <div class="sp-pill-tag" style="background: rgba(14, 165, 233, 0.1); border: 1px solid rgba(14, 165, 233, 0.25); color: #38bdf8;">
-                <span>🏢 {tenant_name} ({'Simulated' if simulated else 'Live'})</span>
+                <span>🏢 {tenant_name}</span>
             </div>
         </div>
     </div>
